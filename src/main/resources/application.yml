@@ -1,5 +1,5 @@
 server:
-  port: 8000
+  port: ${PORT:5000}
   ssl:
     enabled: false
 springdoc:
