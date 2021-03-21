@@ -15,4 +15,3 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "backend-testing-thesis" #Must be unique in Heroku
           heroku_email: "kyusaki1@gmail.com"
-
