@@ -15,4 +15,6 @@ WORKDIR /var/app
 
 COPY --from=build /var/src/build/libs/backend-all.jar .
 
-CMD java -jar backend-all.jar
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "backend-all.jar"]

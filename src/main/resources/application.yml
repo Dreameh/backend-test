@@ -8,9 +8,6 @@ springdoc:
 spring:
   datasource:
     platform: postgres
-    url: jdbc:postgresql://localhost:5432/db
-    username: testing
-    password: 1234
     initialization-mode: always
   devtools:
     add-properties: false
