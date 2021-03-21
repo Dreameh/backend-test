@@ -12,7 +12,6 @@ RUN ./gradlew --no-daemon shadowJar
 
 FROM openjdk:11-jre
 WORKDIR /var/app
-RUN mkdir /var/data
 
 COPY --from=build /var/src/build/libs/backend-all.jar .
 
