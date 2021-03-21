@@ -1,0 +1,88 @@
+plugins {
+    id 'org.springframework.boot' version '2.3.3.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'org.openapi.generator' version "4.3.1"
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'java'
+    id 'application'
+}
+
+group 'dev.dreameh'
+version ''
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    maven { url 'https://plugins.gradle.org/m2/' }
+    mavenCentral()
+}
+
+application {
+    mainClassName = "dev.dreameh.backend.ApiApplication"
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+    implementation group: 'io.swagger', name: 'swagger-annotations', version: '1.6.2'
+    implementation group: 'org.openapitools', name: 'jackson-databind-nullable', version: '0.2.1'
+    implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.4.6'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation group: 'org.jdbi', name: 'jdbi3-core', version: '3.18.0'
+    implementation group: 'org.jdbi', name: 'jdbi3-postgres', version: '3.18.0'
+    implementation group: 'org.jdbi', name: 'jdbi3-sqlobject', version: '3.18.0'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.19'
+
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "${buildDir.absolutePath}/generated/src/main/java/"
+        }
+    }
+    generated {
+        java.srcDir "${buildDir}/generated/src/main/java/"
+    }
+}
+
+task generateModel(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask){
+    generatorName = "spring"
+    inputSpec = "$projectDir/src/main/resources/openapi/backend-api.yaml".toString()
+    outputDir = "$buildDir/generated".toString()
+    apiPackage = "dev.dreameh.backend.rest.v1.api"
+    modelPackage = "dev.dreameh.backend.rest.v1.api.dto"
+    generateApiDocumentation = false
+    configOptions = [
+            interfaceOnly: "true",
+            skipDefaultInterface: "true"
+    ]
+}
+
+// Make sure we always generate Java from OpenAPI
+compileJava {
+    dependsOn generateModel
+    source += sourceSets.generated.java
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}

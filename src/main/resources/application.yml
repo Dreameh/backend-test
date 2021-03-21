@@ -1,0 +1,16 @@
+server:
+  port: 8080
+  ssl:
+    enabled: false
+springdoc:
+  swagger-ui:
+    url: /openapi/backend-api.yaml
+spring:
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/db
+    username: testing
+    password: 1234
+    initialization-mode: always
+  devtools:
+    add-properties: false

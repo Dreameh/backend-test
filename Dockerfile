@@ -1,31 +1,19 @@
-# base image
-FROM python:3.8.1-slim
+FROM openjdk:11 AS build
+WORKDIR /var/src
 
-# set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# Download gradle
+COPY gradlew .
+COPY gradle/ gradle/
+RUN ./gradlew --no-daemon --version
 
-# install netcat
-RUN apt-get update \
-  && apt-get -y install netcat \
-  && apt-get clean
+# Build
+COPY . .
+RUN ./gradlew --no-daemon shadowJar
 
-RUN pip install pipenv
+FROM openjdk:11-jre
+WORKDIR /var/app
+RUN mkdir /var/data
 
-# set working directory
-WORKDIR /usr/src/app
+COPY --from=build /var/src/build/libs/backend-all.jar .
 
-# add and install requirements
-COPY ./Pipfile /usr/src/app/Pipfile
-
-RUN pipenv install
-
-# add entrypoint.sh
-COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
-RUN chmod +x /usr/src/app/entrypoint.sh
-
-# add app
-COPY . /usr/src/app
-
-# run server
-CMD ["/usr/src/app/entrypoint.sh"]
+CMD java -jar backend-all.jar
