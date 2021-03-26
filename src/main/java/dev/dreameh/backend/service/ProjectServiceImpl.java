@@ -1,7 +1,7 @@
 package dev.dreameh.backend.service;
 
 import dev.dreameh.backend.data.ProjectsDao;
-import dev.dreameh.backend.domain.Project;
+import dev.dreameh.backend.service.domain.Project;
 import java.util.List;
 import org.jdbi.v3.core.Jdbi;
 import org.springframework.stereotype.Component;

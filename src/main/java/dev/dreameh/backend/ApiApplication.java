@@ -3,22 +3,18 @@ package dev.dreameh.backend;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
-import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class ApiApplication extends SpringBootServletInitializer {
 
-  public static void main(String[] args) {
-    var appContext = new SpringApplication(ApiApplication.class);
-    appContext.setWebApplicationType(WebApplicationType.SERVLET);
-    appContext.run(args);
+  public static void main(String... args) {
+    SpringApplication.run(ApiApplication.class, args);
   }
 
-  @Bean
-  ServletWebServerFactory servletWebServerFactory() {
-    return new TomcatServletWebServerFactory();
+  @Override
+  protected SpringApplicationBuilder configure(final SpringApplicationBuilder builder) {
+    return builder.sources(ApiApplication.class);
   }
 }

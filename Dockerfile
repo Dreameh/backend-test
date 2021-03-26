@@ -8,13 +8,13 @@ RUN ./gradlew --no-daemon --version
 
 # Build
 COPY . .
-RUN ./gradlew --no-daemon shadowJar
+RUN ./gradlew --no-daemon clean build
 
 FROM openjdk:11-jre
 WORKDIR /var/app
 
-COPY --from=build /var/src/build/libs/backend-all.jar .
+COPY --from=build /var/src/build/libs/* .
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "backend-all.jar"]
+ENTRYPOINT ["java","-Dserver.port=8080", "-jar", "backend.jar"]

@@ -1,10 +1,15 @@
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 plugins {
-    id 'org.springframework.boot' version '2.3.3.RELEASE'
+    id 'org.springframework.boot' version '2.4.4'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'org.openapi.generator' version "4.3.1"
     id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'org.flywaydb.flyway' version '7.7.0'
     id 'java'
     id 'application'
+    id 'idea'
 }
 
 group 'dev.dreameh'
@@ -22,28 +27,32 @@ repositories {
 }
 
 application {
-    mainClassName = "dev.dreameh.backend.ApiApplication"
+    mainClass.set("dev.dreameh.backend.ApiApplication")
+}
+
+shadow {
+    mainClassName = application.getMainClass().get()
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-
+    // Swagger, OpenAPI generator and so forth
     implementation group: 'io.swagger', name: 'swagger-annotations', version: '1.6.2'
     implementation group: 'org.openapitools', name: 'jackson-databind-nullable', version: '0.2.1'
     implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.4.6'
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-tomcat'
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-actuator'
 
-    implementation group: 'org.jdbi', name: 'jdbi3-core', version: '3.18.0'
-    implementation group: 'org.jdbi', name: 'jdbi3-postgres', version: '3.18.0'
-    implementation group: 'org.jdbi', name: 'jdbi3-sqlobject', version: '3.18.0'
+    // For Database connection & Migration
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    compile group: 'org.jdbi', name: 'jdbi3-core', version: '3.18.0'
+    compile group: 'org.jdbi', name: 'jdbi3-postgres', version: '3.18.0'
+    compile group: 'org.jdbi', name: 'jdbi3-sqlobject', version: '3.18.0'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.19'
-
+    implementation group: 'org.flywaydb', name: 'flyway-core', version: '7.7.0'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
@@ -64,6 +73,8 @@ sourceSets {
     }
 }
 
+// TASKS
+
 task generateModel(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask){
     generatorName = "spring"
     inputSpec = "$projectDir/src/main/resources/openapi/backend-api.yaml".toString()
@@ -75,6 +86,18 @@ task generateModel(type: org.openapitools.generator.gradle.plugin.tasks.Generate
             interfaceOnly: "true",
             skipDefaultInterface: "true"
     ]
+}
+
+task flywayNewTemplate {
+    description 'Creates new sql migration template.'
+    doLast {
+        def version = '1.0'
+        def marker = LocalDateTime.now().format(DateTimeFormatter.ofPattern('yyyyMMddHHmmss'))
+        String fileName = "V${version}.${marker}__RENAME_ME.sql"
+        def flywayLocation = "${sourceSets.main.resources.sourceDirectories.first().path}/db/migration"
+        new File("${flywayLocation}/${fileName}").createNewFile()
+        println "Created a new migration file: ${fileName}"
+    }
 }
 
 // Make sure we always generate Java from OpenAPI

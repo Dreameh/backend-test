@@ -9,11 +9,11 @@ public final class ProjectConverter {
   private ProjectConverter() {}
 
   public static List<Project> toProjectList(
-      final List<dev.dreameh.backend.domain.Project> projects) {
+      final List<dev.dreameh.backend.service.domain.Project> projects) {
     return projects.stream().map(ProjectConverter::toProject).collect(Collectors.toList());
   }
 
-  private static Project toProject(final dev.dreameh.backend.domain.Project project) {
+  private static Project toProject(final dev.dreameh.backend.service.domain.Project project) {
     return new Project().title(project.getTitle()).text(project.getText());
   }
 }

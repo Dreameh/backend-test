@@ -1,11 +1,12 @@
 package dev.dreameh.backend.data;
 
-import dev.dreameh.backend.domain.Project;
-import java.util.List;
+import dev.dreameh.backend.service.domain.Project;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.sqlobject.transaction.Transaction;
+
+import java.util.List;
 
 public interface ProjectsDao {
 
