@@ -11,13 +11,13 @@ public class CorsConfiguration implements WebMvcConfigurer {
     // For local development
     @Bean
     public WebMvcConfigurer corsConfigurer() {
-        var origins = List.of("https://frontend-testing-thesis.herokuapp.com");
+        var origins = List.of("frontend-testing-thesis.herokuapp.com", "backend-testing-thesis.herokuapp.com");
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry
                     .addMapping("/projects")
-                    .allowedOrigins(origins.get(0));
+                    .allowedOrigins(origins.get(0), origins.get(1));
             }
         };
     }
