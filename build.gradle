@@ -1,12 +1,8 @@
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-
 plugins {
     id 'org.springframework.boot' version '2.4.4'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'org.openapi.generator' version "4.3.1"
     id 'com.github.johnrengelman.shadow' version '6.1.0'
-    id 'org.flywaydb.flyway' version '7.7.0'
     id 'java'
     id 'application'
     id 'idea'
@@ -41,16 +37,10 @@ dependencies {
     implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
     implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.4.6'
 
-    compile 'org.springframework.boot:spring-boot-starter-web'
-    compile 'org.springframework.boot:spring-boot-starter-actuator'
-
-    // For Database connection & Migration
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    compile group: 'org.jdbi', name: 'jdbi3-core', version: '3.18.0'
-    compile group: 'org.jdbi', name: 'jdbi3-postgres', version: '3.18.0'
-    compile group: 'org.jdbi', name: 'jdbi3-sqlobject', version: '3.18.0'
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.19'
-    implementation group: 'org.flywaydb', name: 'flyway-core', version: '7.7.0'
+    // Spring boot specifics
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
@@ -73,7 +63,10 @@ sourceSets {
     }
 }
 
-// TASKS
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
 
 task generateModel(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask){
     generatorName = "spring"
@@ -88,25 +81,8 @@ task generateModel(type: org.openapitools.generator.gradle.plugin.tasks.Generate
     ]
 }
 
-task flywayNewTemplate {
-    description 'Creates new sql migration template.'
-    doLast {
-        def version = '1.0'
-        def marker = LocalDateTime.now().format(DateTimeFormatter.ofPattern('yyyyMMddHHmmss'))
-        String fileName = "V${version}.${marker}__RENAME_ME.sql"
-        def flywayLocation = "${sourceSets.main.resources.sourceDirectories.first().path}/db/migration"
-        new File("${flywayLocation}/${fileName}").createNewFile()
-        println "Created a new migration file: ${fileName}"
-    }
-}
-
 // Make sure we always generate Java from OpenAPI
 compileJava {
     dependsOn generateModel
     source += sourceSets.generated.java
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
 }

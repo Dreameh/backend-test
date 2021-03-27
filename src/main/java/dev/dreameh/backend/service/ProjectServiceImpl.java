@@ -1,24 +1,21 @@
 package dev.dreameh.backend.service;
 
-import dev.dreameh.backend.data.ProjectsDao;
+import dev.dreameh.backend.data.ProjectsRepository;
 import dev.dreameh.backend.service.domain.Project;
-import java.util.List;
-import org.jdbi.v3.core.Jdbi;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-@Component
+import java.util.List;
+
+@Service
 public class ProjectServiceImpl implements ProjectService {
 
-
-  private ProjectsDao dao;
+  @Autowired
+  private ProjectsRepository repository;
 
   private ProjectServiceImpl() {}
 
-  public ProjectServiceImpl(final Jdbi jdbi) {
-    this.dao = jdbi.onDemand(ProjectsDao.class);
-  }
-
   public List<Project> getProjects() {
-    return dao.getProjects();
+    return repository.findAll();
   }
 }

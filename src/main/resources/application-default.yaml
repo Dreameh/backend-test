@@ -1,0 +1,13 @@
+server:
+  port: ${PORT:8000}
+  ssl:
+    enabled: false
+spring:
+  data:
+    mongodb:
+      uri: ${MONGO_URL}
+  devtools:
+    add-properties: false
+springdoc:
+  swagger-ui:
+    url: /openapi/backend-api.yaml

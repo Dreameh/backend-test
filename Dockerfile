@@ -13,7 +13,7 @@ RUN ./gradlew --no-daemon clean build
 FROM openjdk:11-jre
 WORKDIR /var/app
 
-COPY --from=build /var/src/build/libs/* .
+COPY --from=build /var/src/build/libs/* ./
 
 EXPOSE 8080
 

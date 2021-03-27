@@ -1,16 +1,27 @@
 package dev.dreameh.backend.service.domain;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.Objects;
 import java.util.StringJoiner;
 
+@Document(collection = "projects")
 public final class Project {
 
-  private final String title;
-  private final String text;
+  @Id
+  private Long id;
+  private String title;
+  private String text;
 
-  public Project(final String title, final String text) {
+  public Project(final Long id, final String title, final String text) {
+    this.id = id;
     this.title = title;
     this.text = text;
+  }
+
+  public Long getId() {
+    return id;
   }
 
   public String getTitle() {
