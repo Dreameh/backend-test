@@ -11,9 +11,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 11
@@ -26,3 +24,12 @@ jobs:
       run: ./gradlew build
     - name: Run all tests
       run: ./gradlew test
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "backend-testing-thesis" #Must be unique in Heroku
+          heroku_email: "kyusaki1@gmail.com"
